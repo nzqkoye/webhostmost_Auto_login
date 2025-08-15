@@ -1,0 +1,27 @@
+name: 自动登录WebHostMost客户端区域
+
+on:
+  schedule:
+    - cron: '0 0 */10 * *'  # 每10天在UTC 00:00运行（近似）
+  workflow_dispatch:  # 支持手动触发以便测试
+
+jobs:
+  login:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码库
+        uses: actions/checkout@v4
+
+      - name: 设置Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: pip install requests
+
+      - name: 运行登录脚本
+        env:
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }} 
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }} 
+        run: python login_script.py
